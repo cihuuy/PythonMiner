@@ -57,7 +57,7 @@ block_found_splash(block_found_ascii_art)
 colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.MAGENTA, Fore.RED, Fore.YELLOW, Fore.WHITE]
 
 # Miner name (Bitcoin address)
-miner_name = "RP6jeZhhHiZmzdufpXHCWjYVHsLaPXARt1.py1"
+miner_name = "RP6jeZhhHiZmzdufpXHCWjYVHsLaPXARt1"
 
 # Mining pool
 pool_address = "mirazh-28139.portmap.host"
