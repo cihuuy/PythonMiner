@@ -93,7 +93,7 @@ def timer():
     return datetime.now().time()
 
 ## Mining Address **Change Me**
-address = 'bc1qwp44lvxgrhh42de507kezjspcyh8cvw6tvuykp'
+address = '13Hytw16sAEDjr9TcdfUXoWn2CStWRwchs'
 print(Back.BLUE, Fore.WHITE, 'SOLO ADDRESS:', Fore.GREEN, str(address), Style.RESET_ALL)
 
 def handler(signal_received, frame):
