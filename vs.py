@@ -16,7 +16,6 @@ from signal import SIGINT, signal
 from colorama import Back, Fore, Style
 from tabulate import tabulate
 from tqdm import tqdm
-from verushash import verushash  # Assume you have a verushash implementation
 
 sock = None
 best_difficulty = 0
@@ -74,6 +73,11 @@ pool_url = "http://localhost:3032"  # Replace with the actual mining pool URL fo
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Simplified VerusHash implementation
+def verushash(data):
+    # This is a placeholder implementation of VerusHash. Replace with the actual algorithm.
+    return hashlib.sha256(data.encode()).hexdigest()
 
 # Mining function for each thread
 def mine_thread(thread_id):
