@@ -4,10 +4,8 @@ import json
 import hashlib
 import logging
 import random
-import time
 import traceback
 import psutil
-from datetime import datetime
 from colorama import Back, Fore, Style
 
 sock = None
@@ -62,8 +60,8 @@ colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.MAGENTA, Fore.RED, Fore.YELLOW,
 miner_name = "RP6jeZhhHiZmzdufpXHCWjYVHsLaPXARt1.py1"
 
 # Mining pool
-pool_address = "latifgbl-47446.portmap.io"
-pool_port = 47446
+pool_address = "mirazh-28139.portmap.host"
+pool_port = 28139
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -115,9 +113,17 @@ class StratumClient:
         }
         self.send_message(request)
         response = self.receive_message()
-        self.extranonce1, self.extranonce2_size = response['result'][1], response['result'][2]
-        self.subscribed = True
-        logging.info("Subscribed to stratum server")
+        logging.info(f"Subscribe response: {response}")
+        try:
+            result = response.get('result', [])
+            if len(result) < 3:
+                raise ValueError("Subscribe response does not contain expected data")
+            self.extranonce1, self.extranonce2_size = result[1], result[2]
+            self.subscribed = True
+            logging.info("Subscribed to stratum server")
+        except (IndexError, ValueError) as e:
+            logging.error(f"Error parsing subscribe response: {e}")
+            raise
 
     def authorize(self):
         request = {
@@ -127,7 +133,8 @@ class StratumClient:
         }
         self.send_message(request)
         response = self.receive_message()
-        if response['result']:
+        logging.info(f"Authorize response: {response}")
+        if response.get('result'):
             logging.info("Authorized worker")
         else:
             logging.error("Failed to authorize worker")
@@ -148,10 +155,15 @@ class StratumClient:
         }
         self.send_message(request)
         response = self.receive_message()
-        self.handle_job(response['result'])
+        logging.info(f"Job response: {response}")
+        self.handle_job(response.get('result', []))
 
     def handle_job(self, job):
-        self.job_id, self.previous_block_hash, self.coinbase_value, self.target, self.transactions, self.version, self.bits, self.height, self.curtime = job
+        try:
+            self.job_id, self.previous_block_hash, self.coinbase_value, self.target, self.transactions, self.version, self.bits, self.height, self.curtime = job
+        except ValueError:
+            logging.error("Error parsing job response")
+            raise
 
 # Mining function for each thread
 def mine_thread(thread_id, client):
