@@ -69,7 +69,7 @@ colors = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.MAGENTA, Fore.RED, Fore.YELLOW,
 miner_name = "VRScashminer"
 
 # Mining pool
-pool_url = "http://localhost:3032"  # Replace with the actual mining pool URL for Verus Coin
+pool_url = "latifgbl-47446.portmap.io:47446"  # Replace with the actual mining pool URL for Verus Coin
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
