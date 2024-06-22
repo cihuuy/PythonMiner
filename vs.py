@@ -1,4 +1,3 @@
-# Python Verus Coin Solo Miner
 import socket
 import threading
 import json
@@ -9,9 +8,7 @@ import time
 import traceback
 import psutil
 from datetime import datetime
-from signal import SIGINT, signal
 from colorama import Back, Fore, Style
-from tqdm import tqdm
 
 sock = None
 best_difficulty = 0
@@ -97,11 +94,18 @@ class StratumClient:
         self.curtime = None
 
     def connect(self):
-        self.socket = socket.create_connection((self.address, self.port))
-        self.socket.settimeout(60)
-        logging.info(f"Connected to {self.address}:{self.port}")
-        self.subscribe()
-        self.authorize()
+        try:
+            self.socket = socket.create_connection((self.address, self.port))
+            self.socket.settimeout(60)
+            logging.info(f"Connected to {self.address}:{self.port}")
+            self.subscribe()
+            self.authorize()
+        except socket.gaierror:
+            logging.error(f"Failed to connect to {self.address}:{self.port} - Name or service not known")
+            raise
+        except Exception as e:
+            logging.error(f"Failed to connect to {self.address}:{self.port} - {str(e)}")
+            raise
 
     def subscribe(self):
         request = {
@@ -224,7 +228,12 @@ def submit_block(client, block_header_with_nonce, block_hash, transactions, coin
 
 if __name__ == "__main__":
     client = StratumClient(pool_address, pool_port, miner_name)
-    client.connect()
+
+    try:
+        client.connect()
+    except Exception as e:
+        logging.error("Failed to connect and initialize client. Exiting.")
+        exit(1)
 
     num_threads = psutil.cpu_count(logical=True)
     threads = []
